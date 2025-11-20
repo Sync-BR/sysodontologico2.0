@@ -1,0 +1,56 @@
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.notification {
+    position: relative;
+    margin-bottom: 1rem;
+    padding: 1.5rem 2.5rem 1.5rem 1.5rem;
+    border-radius: 12px;
+    color: white;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateX(150%);
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.25, 1.35);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    opacity: 0;
+}
+
+.notification.success {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+}
+
+.notification.error {
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+}
+
+.notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255,255,255,0.3);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification .icon {
+    margin-right: 12px;
+    font-size: 1.5em;
+}
