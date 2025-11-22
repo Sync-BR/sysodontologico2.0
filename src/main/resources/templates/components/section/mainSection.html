@@ -1,0 +1,188 @@
+<section class="hero" th:fragment="hero">
+    <div class="container hero-content">
+        <div class="hero-text">
+            <h2>Tecnologia de Ponta para Sua Clínica Odontológica</h2>
+            <p>O sistema inteligente que une odontologia e tecnologia para revolucionar a gestão da sua clínica.</p>
+            <div class="hero-buttons">
+                <a th:href="@{/register}" class="btn-primary">Experimente Grátis</a>
+                <a href="#features" class="btn-secondary">Ver Demonstração</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Dashboard do DentalTech">
+            <div class="floating-element">
+                <i class="fas fa-calendar-alt" style="font-size: 30px; color: #6C63FF;"></i>
+            </div>
+            <div class="floating-element">
+                <i class="fas fa-chart-line" style="font-size: 30px; color: #00D4FF;"></i>
+            </div>
+            <div class="floating-element">
+                <i class="fas fa-tooth" style="font-size: 30px; color: #FF6B6B;"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="features" id="features" th:fragment="features">
+    <div class="container">
+        <div class="section-title">
+            <h2>Tecnologia que Transforma</h2>
+            <p>Recursos inteligentes desenvolvidos para otimizar cada aspecto da sua clínica odontológica</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>Agendamento Inteligente</h3>
+                <p>IA que otimiza horários, reduzindo buracos na agenda e aumentando a produtividade.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Prontuário com IA</h3>
+                <p>Sugestões automáticas de tratamentos baseadas em histórico e melhores práticas.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-network"></i>
+                </div>
+                <h3>Análises Preditivas</h3>
+                <p>Preveja tendências e otimize seus recursos com base em dados históricos.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <h3>Nuvem Segura</h3>
+                <p>Seus dados protegidos com criptografia de última geração e backup automático.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>App Mobile</h3>
+                <p>Controle sua clínica de qualquer lugar com nosso aplicativo nativo.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Conformidade Total</h3>
+                <p>Atendimento automático às normas da odontologia e LGPD.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="pricing" id="pricing" th:fragment="pricing">
+    <div class="container">
+        <div class="section-title">
+            <h2>Planos Tecnológicos</h2>
+            <p>Escolha a solução perfeita para o crescimento da sua clínica</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="pricing-header">
+                    <h3 class="pricing-name">Start</h3>
+                    <div class="pricing-price">Grátis</div>
+                    <div class="pricing-period">Para quem está começando</div>
+                </div>
+                <ul class="pricing-features">
+                    <li><i class="fas fa-check"></i> Até 100 pacientes</li>
+                    <li><i class="fas fa-check"></i> Agenda inteligente</li>
+                    <li><i class="fas fa-check"></i> Prontuário básico</li>
+                    <li><i class="fas fa-check"></i> Suporte por email</li>
+                    <li><i class="fas fa-times"></i> Análises preditivas</li>
+                    <li><i class="fas fa-times"></i> App mobile</li>
+                </ul>
+                <a th:href="@{/register}" class="btn-primary">Começar Agora</a>
+            </div>
+            <div class="pricing-card featured">
+                <div class="pricing-header">
+                    <h3 class="pricing-name">Pro</h3>
+                    <div class="pricing-price">R$ 149<span>/mês</span></div>
+                    <div class="pricing-period">Ideal para clínicas em crescimento</div>
+                </div>
+                <ul class="pricing-features">
+                    <li><i class="fas fa-check"></i> Pacientes ilimitados</li>
+                    <li><i class="fas fa-check"></i> Agenda com IA</li>
+                    <li><i class="fas fa-check"></i> Prontuário com IA</li>
+                    <li><i class="fas fa-check"></i> Suporte prioritário</li>
+                    <li><i class="fas fa-check"></i> Análises preditivas</li>
+                    <li><i class="fas fa-check"></i> App mobile completo</li>
+                </ul>
+                <a th:href="@{/register}" class="btn-primary">Assinar Agora</a>
+            </div>
+            <div class="pricing-card">
+                <div class="pricing-header">
+                    <h3 class="pricing-name">Enterprise</h3>
+                    <div class="pricing-price">R$ 299<span>/mês</span></div>
+                    <div class="pricing-period">Para grandes clínicas</div>
+                </div>
+                <ul class="pricing-features">
+                    <li><i class="fas fa-check"></i> Múltiplas unidades</li>
+                    <li><i class="fas fa-check"></i> IA avançada</li>
+                    <li><i class="fas fa-check"></i> Prontuário avançado</li>
+                    <li><i class="fas fa-check"></i> Suporte 24/7</li>
+                    <li><i class="fas fa-check"></i> Relatórios personalizados</li>
+                    <li><i class="fas fa-check"></i> API para integração</li>
+                </ul>
+                <a th:href="@{/register}" class="btn-primary">Fale Conosco</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="testimonials" id="testimonials" th:fragment="testimonials">
+    <div class="container">
+        <div class="section-title">
+            <h2>Quem Usa Aprova</h2>
+            <p>Clínicas que já estão revolucionando sua gestão com a DentalTech</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">"A IA de agendamento reduziu nossos horários ociosos em 60%. O retorno sobre o investimento foi imediato. Tecnologia de verdade para quem quer crescer!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">MS</div>
+                    <div class="author-info">
+                        <h4>Dra. Mariana Silva</h4>
+                        <p>Clínica OdontoPlus</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"Migrei de um sistema tradicional para a DentalTech e a diferença é absurda. A interface moderna e os recursos com IA fazem toda diferença no dia a dia."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">CM</div>
+                    <div class="author-info">
+                        <h4>Dr. Carlos Mendes</h4>
+                        <p>Smile Odontologia</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text">"Os relatórios preditivos me ajudaram a identificar tendências de tratamentos antes mesmo dos picos. Isso é gestão de verdade com tecnologia!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">AC</div>
+                    <div class="author-info">
+                        <h4>Dra. Ana Costa</h4>
+                        <p>Clínica Sorriso Perfeito</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="cta-section" th:fragment="cta">
+    <div class="container">
+        <h2>Pronto para a Revolução Tecnológica na Sua Clínica?</h2>
+        <p>Junte-se a centenas de profissionais visionários que já estão usando a DentalTech para transformar sua gestão e resultados.</p>
+        <a th:href="@{/register}" class="btn-primary">Experimente Grátis por 30 Dias</a>
+    </div>
+</section>

@@ -1,0 +1,38 @@
+<div class="notification-container" id="notificationContainer" th:fragment="messages_register">
+    <div th:if="${param.success}" class="notification success" id="successNotification">
+        <span class="icon">✓</span>
+        <span class="message">Registro realizado com sucesso.</span>
+        <button class="close-btn">&times;</button>
+    </div>
+
+    <div th:if="${param.failPassword}" class="notification error" id="errorNotification">
+        <span class="icon">⚠</span>
+        <span class="message" >As senhas não coincidem.</span>
+        <button class="close-btn">&times;</button>
+    </div>
+    <div th:if="${param.failEmail}" class="notification error" id="errorEmail">
+        <span class="icon">⚠</span>
+        <span class="message" >Este e-mail já está cadastrado.</span>
+        <button class="close-btn">&times;</button>
+    </div>
+    <div th:if="${param.failCpf}" class="notification error" id="errorEmail">
+        <span class="icon">⚠</span>
+        <span class="message" >Este cpf já está cadastrado.</span>
+        <button class="close-btn">&times;</button>
+    </div>
+</div>
+
+<div class="notification-container" id="notificationContainer" th:fragment="messages_login">
+    <!-- Notificação de Sucesso -->
+    <div th:if="${param.success}" class="notification success" id="successNotification">
+        <span class="icon">✓</span>
+        <span class="message">Conectado com sucesso.</span>
+        <button class="close-btn">&times;</button>
+    </div>
+
+    <div th:if="${param.failUser}" class="notification error" id="errorNotification">
+        <span class="icon">⚠</span>
+        <span class="message" >Login ou senha incorretos.</span>
+        <button class="close-btn">&times;</button>
+    </div>
+</div>

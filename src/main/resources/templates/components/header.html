@@ -1,0 +1,61 @@
+<header th:fragment="header_Main">
+    <div class="container header-container">
+        <a th:href="@{/}">
+            <div class="logo">
+                <i class="fas fa-tooth"></i>
+                <h1>DentalTech</h1>
+            </div>
+        </a>
+
+        <!-- Menu Desktop -->
+        <div class="desktop-nav">
+            <nav>
+                <ul>
+                    <li><a href="#features">Recursos</a></li>
+                    <li><a href="#pricing">Planos</a></li>
+                    <li><a href="#testimonials">Depoimentos</a></li>
+                    <li><a th:href="@{/login}">Login</a></li>
+                </ul>
+            </nav>
+            <a th:href="@{/register}" class="cta-button">Começar Grátis</a>
+        </div>
+
+        <!-- Menu Mobile -->
+        <div class="mobile-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+
+    <!-- Menu Mobile Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Menu Mobile -->
+    <div class="mobile-nav">
+        <ul>
+            <li><a href="#features">Recursos</a></li>
+            <li><a href="#pricing">Planos</a></li>
+            <li><a href="#testimonials">Depoimentos</a></li>
+            <li><a th:href="@{/login}">Login</a></li>
+        </ul>
+        <a href="#pricing" class="cta-button">Começar Grátis</a>
+    </div>
+</header>
+
+
+<header th:fragment="header_Simple">
+    <div class="container header-container">
+        <a th:href="@{/}">
+            <div class="logo">
+                <i class="fas fa-tooth"></i>
+                <h1>DentalTech</h1>
+            </div>
+        </a>
+        <a th:href="@{/}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Voltar para o Início
+        </a>
+    </div>
+</header>
