@@ -26,13 +26,35 @@
     <!-- Notificação de Sucesso -->
     <div th:if="${param.success}" class="notification success" id="successNotification">
         <span class="icon">✓</span>
-        <span class="message">Conectado com sucesso.</span>
+        <span class="message">Registro realizado com sucesso.</span>
         <button class="close-btn">&times;</button>
     </div>
 
     <div th:if="${param.failUser}" class="notification error" id="errorNotification">
         <span class="icon">⚠</span>
         <span class="message" >Login ou senha incorretos.</span>
+        <button class="close-btn">&times;</button>
+    </div>
+</div>
+
+
+<div class="notification-container" id="notificationContainer" th:fragment="messages_Specialty">
+    <!-- Notificação de Sucesso -->
+    <div th:if="${param.success}" class="notification success" id="successNotification">
+        <span class="icon">✓</span>
+        <span class="message">Especialista adicionada com sucesso.</span>
+        <button class="close-btn">&times;</button>
+    </div>
+
+    <div th:if="${param.successUpdate}" class="notification success" id="successNotification">
+        <span class="icon">✓</span>
+        <span class="message">Especialista atualizado com sucesso.</span>
+        <button class="close-btn">&times;</button>
+    </div>
+
+    <div th:if="${param.failSpecialty}" class="notification error" id="errorNotification">
+        <span class="icon">⚠</span>
+        <span class="message" >Erro ao adicionar especialista.</span>
         <button class="close-btn">&times;</button>
     </div>
 </div>

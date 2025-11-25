@@ -1,0 +1,66 @@
+<div class="stats-grid" th:fragment="count_Report">
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon patients">
+                <i class="fas fa-user-injured"></i>
+            </div>
+            <div class="stat-trend trend-up">
+                <i class="fas fa-arrow-up"></i>
+                <span>12%</span>
+            </div>
+        </div>
+        <div class="stat-value" >1,248</div>
+        <div class="stat-label">Total de Pacientes</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon patients">
+                <i class="fas fa-stethoscope"></i>
+            </div>
+        </div>
+        <div class="stat-value" th:text="${reportSpecialty}">1,248</div>
+        <div class="stat-label">Total de especialidade</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon appointments">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-trend trend-up">
+                <i class="fas fa-arrow-up"></i>
+                <span>8%</span>
+            </div>
+        </div>
+        <div class="stat-value">342</div>
+        <div class="stat-label">Agendamentos/Mês</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon revenue">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-trend trend-up">
+                <i class="fas fa-arrow-up"></i>
+                <span>15%</span>
+            </div>
+        </div>
+        <div class="stat-value">R$ 45.680</div>
+        <div class="stat-label">Faturamento Mensal</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon treatments">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <div class="stat-trend trend-down">
+                <i class="fas fa-arrow-down"></i>
+                <span>5%</span>
+            </div>
+        </div>
+        <div class="stat-value">28</div>
+        <div class="stat-label">Tratamentos em Andamento</div>
+    </div>
+</div>

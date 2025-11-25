@@ -59,3 +59,47 @@
         </a>
     </div>
 </header>
+
+
+<aside class="sidebar" th:fragment="header_Client">
+    <div class="sidebar-header">
+        <div class="logo">
+            <i class="fas fa-tooth"></i>
+            <h1>DentalTech</h1>
+        </div>
+    </div>
+
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/dashboard}"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+        <li><a href="pacientes.html"><i class="fas fa-user-injured"></i> Pacientes</a></li>
+        <li><a href="agendamentos.html"><i class="fas fa-calendar-check"></i> Agendamentos</a></li>
+        <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Financeiro</a></li>
+        <li><a th:href="@{/clinica/especialista}"><i class="fas fa-stethoscope"></i> Especialidades</a></li>
+        <li><a href="#"><i class="fas fa-capsules"></i> Estoque</a></li>
+        <li><a href="#"><i class="fas fa-chart-bar"></i> Relatórios</a></li>
+        <li><a href="#"><i class="fas fa-cog"></i> Configurações</a></li>
+    </ul>
+</aside>
+
+
+<header class="top-bar" th:fragment="header_client_page">
+    <div class="page-title">
+        <h1>Dashboard</h1>
+    </div>
+
+    <div class="user-menu">
+        <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar">DR</div>
+            <div class="user-info">
+                <h3>Dr. Rodrigo Silva</h3>
+                <p>Clínica OdontoPlus</p>
+            </div>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+</header>
