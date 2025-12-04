@@ -23,10 +23,16 @@ public class ErrorsBuilder {
         model.addAttribute("description", "O token fornecido é inválido ou não pôde ser verificado.");
 
     }
+
+    public void errorClinicNotFount(Model model) {
+        model.addAttribute("code", "17FZ40");
+        model.addAttribute("title", "Clinica não encontrada");
+        model.addAttribute("description", "Não é possivel completar essa requisição, o usuário não possuir uma clinica.");
+
+    }
     public void errorUnknown(Model model) {
         model.addAttribute("code", "27ED00");
         model.addAttribute("title", "Erro desconhecido");
         model.addAttribute("description", "Não conseguimnos encontrar sua solicitação");
-
     }
 }
