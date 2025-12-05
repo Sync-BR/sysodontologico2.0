@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Dentista - DentalTech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./../../src/style/messages.css">
+
+    <style>
+        /* Reset e configurações gerais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6C63FF; /* Roxo tecnológico */
+            --secondary: #00D4FF; /* Ciano brilhante */
+            --accent: #FF6B6B; /* Coral vibrante */
+            --success: #4CAF50; /* Verde sucesso */
+            --warning: #FF9800; /* Laranja alerta */
+            --dark: #1A1A2E; /* Azul escuro quase preto */
+            --darker: #0F0F1B; /* Fundo mais escuro */
+            --light: #FFFFFF; /* Branco puro */
+            --gray: #8A8A9D; /* Cinza para texto secundário */
+            --sidebar: #1A1A2E; /* Cor do sidebar */
+            --gradient: linear-gradient(135deg, #6C63FF 0%, #00D4FF 100%);
+            --gradient-dark: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+        }
+
+        body {
+            background-color: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 0;
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 28px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--light);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title h1 {
+            font-size: 24px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification-icon {
+            position: relative;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .notification-icon:hover {
+            color: var(--light);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .user-info h3 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* Page Content */
+        .page-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-title {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-title i {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--success);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .status-inactive {
+            background: rgba(255, 107, 107, 0.2);
+            color: var(--accent);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--light);
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--accent);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--light);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-select {
+            background-color: #0F0F1B;
+            color: white;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group .form-input:first-child {
+            flex: 1;
+        }
+
+        .input-group-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 0 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            transition: all 0.3s;
+            min-width: 50px;
+        }
+
+        .input-group-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--light);
+        }
+
+        .currency-input {
+            position: relative;
+        }
+
+        .currency-input i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            z-index: 1;
+        }
+
+        .currency-input .form-input {
+            padding-left: 45px;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+            }
+
+            .sidebar-menu li {
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
+
+            .sidebar-menu a {
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+            }
+
+            .sidebar-menu a:hover, .sidebar-menu a.active {
+                border-left-color: transparent;
+                border-bottom-color: var(--primary);
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-content {
+                padding: 20px;
+            }
+
+            .form-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Sidebar -->
+    <div th:replace="~{components/header :: header_Client}"></div>
+    <div th:replace="~{components/messages :: messages_Register_Dentist}"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div th:replace="~{components/header :: header_client_page}"></div>
+
+
+        <!-- Page Content -->
+        <section class="page-content">
+            <div class="form-container">
+                <div class="form-header">
+                    <div class="form-title">
+                        <i class="fas fa-user-md"></i>
+                        <span>Cadastro de Dentista</span>
+                    </div>
+                    <div>
+                        <span class="status-badge status-active">Ativo</span>
+                    </div>
+                </div>
+
+                <form id="dentistForm" th:action="@{/api/v1/clinic/dentist/new}" method="post" th:object="${dentist}">
+                    <div class="form-grid">
+                        <!-- Nome Completo -->
+                        <div class="form-group">
+                            <label class="form-label required" for="name">Nome Completo</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-user"></i>
+                                <input type="text" class="form-input" id="name" name="name"
+                                       placeholder="Digite o nome completo" th:field="*{name}" required>
+                            </div>
+                        </div>
+
+                        <!-- CPF -->
+                        <div class="form-group">
+                            <label class="form-label required" for="cpf">CPF</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-id-card"></i>
+                                <input type="text" class="form-input" id="cpf" name="cpf"
+                                       placeholder="000.000.000-00" th:field="*{cpf}" required>
+                            </div>
+                        </div>
+
+                        <!-- RG -->
+                        <div class="form-group">
+                            <label class="form-label" for="rg">RG</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-id-card"></i>
+                                <input type="text" class="form-input" id="rg" name="rg"
+                                       placeholder="Digite o RG" th:field="*{rg}">
+                            </div>
+                        </div>
+
+                        <!-- Data de Nascimento -->
+                        <div class="form-group">
+                            <label class="form-label required" for="birthDate">Data de Nascimento</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-calendar"></i>
+                                <input type="date" class="form-input" id="birthDate" name="birthDate"
+                                       th:field="*{birthDate}" required>
+                            </div>
+                        </div>
+
+                        <!-- E-mail -->
+                        <div class="form-group">
+                            <label class="form-label required" for="email">E-mail</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" class="form-input" id="email" name="email"
+                                       placeholder="Digite o e-mail" th:field="*{email}" required>
+                            </div>
+                        </div>
+
+                        <!-- Telefone -->
+                        <div class="form-group">
+                            <label class="form-label required" for="phone">Telefone</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-phone"></i>
+                                <input type="tel" class="form-input" id="phone" name="phone"
+                                       placeholder="(00) 00000-0000" th:field="*{phone}" required>
+                            </div>
+                        </div>
+
+                        <!-- Endereço - CEP -->
+                        <div class="form-group">
+                            <label class="form-label required" for="cep">CEP</label>
+                            <div class="input-group">
+                                <div class="input-with-icon" style="flex: 1;">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <input type="text" class="form-input" id="cep" name="address.cep"
+                                           placeholder="00000-000" th:field="*{address.cep}" required>
+                                </div>
+                                <button type="button" class="input-group-btn" id="searchCep">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Endereço - Logradouro -->
+                        <div class="form-group">
+                            <label class="form-label required" for="logradouro">Logradouro</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-road"></i>
+                                <input type="text" class="form-input" id="logradouro" name="address.logradouro"
+                                       placeholder="Rua, Avenida, etc." th:field="*{address.logradouro}" required>
+                            </div>
+                        </div>
+
+                        <!-- Endereço - Número -->
+                        <div class="form-group">
+                            <label class="form-label required" for="numero">Número</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-hashtag"></i>
+                                <input type="text" class="form-input" id="numero" name="address.numero"
+                                       placeholder="Número" th:field="*{address.numero}" required>
+                            </div>
+                        </div>
+
+                        <!-- Endereço - Complemento -->
+                        <div class="form-group">
+                            <label class="form-label" for="complemento">Complemento</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-building"></i>
+                                <input type="text" class="form-input" id="complemento" name="address.complemento"
+                                       placeholder="Apto, Sala, etc." th:field="*{address.complemento}">
+                            </div>
+                        </div>
+
+                        <!-- Endereço - Bairro -->
+                        <div class="form-group">
+                            <label class="form-label required" for="bairro">Bairro</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map-pin"></i>
+                                <input type="text" class="form-input" id="bairro" name="address.bairro"
+                                       placeholder="Bairro" th:field="*{address.bairro}" required>
+                            </div>
+                        </div>
+
+                        <!-- Endereço - Cidade -->
+                        <div class="form-group">
+                            <label class="form-label required" for="localidade">Cidade</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-city"></i>
+                                <input type="text" class="form-input" id="localidade" name="address.localidade"
+                                       placeholder="Cidade" th:field="*{address.localidade}" required>
+                            </div>
+                        </div>
+
+                        <!-- Endereço - UF -->
+                        <div class="form-group">
+                            <label class="form-label required" for="uf">UF</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-flag"></i>
+                                <select class="form-select" id="uf" name="address.uf" th:field="*{address.uf}" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="AC">Acre (AC)</option>
+                                    <option value="AL">Alagoas (AL)</option>
+                                    <option value="AP">Amapá (AP)</option>
+                                    <option value="AM">Amazonas (AM)</option>
+                                    <option value="BA">Bahia (BA)</option>
+                                    <option value="CE">Ceará (CE)</option>
+                                    <option value="DF">Distrito Federal (DF)</option>
+                                    <option value="ES">Espírito Santo (ES)</option>
+                                    <option value="GO">Goiás (GO)</option>
+                                    <option value="MA">Maranhão (MA)</option>
+                                    <option value="MT">Mato Grosso (MT)</option>
+                                    <option value="MS">Mato Grosso do Sul (MS)</option>
+                                    <option value="MG">Minas Gerais (MG)</option>
+                                    <option value="PA">Pará (PA)</option>
+                                    <option value="PB">Paraíba (PB)</option>
+                                    <option value="PR">Paraná (PR)</option>
+                                    <option value="PE">Pernambuco (PE)</option>
+                                    <option value="PI">Piauí (PI)</option>
+                                    <option value="RJ">Rio de Janeiro (RJ)</option>
+                                    <option value="RN">Rio Grande do Norte (RN)</option>
+                                    <option value="RS">Rio Grande do Sul (RS)</option>
+                                    <option value="RO">Rondônia (RO)</option>
+                                    <option value="RR">Roraima (RR)</option>
+                                    <option value="SC">Santa Catarina (SC)</option>
+                                    <option value="SP">São Paulo (SP)</option>
+                                    <option value="SE">Sergipe (SE)</option>
+                                    <option value="TO">Tocantins (TO)</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Comissão -->
+                        <div class="form-group">
+                            <label class="form-label required" for="commission">Comissão (%)</label>
+                            <div class="currency-input">
+                                <i class="fas fa-percentage"></i>
+                                <input type="text" class="form-input" id="commission" name="commission"
+                                       placeholder="0,00" th:field="*{commission}" required>
+                                <span class="currency-symbol">%</span>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="form-label required" for="password"> Senha</label>
+                            <div class="currency-input">
+                                <input type="password" class="form-input" id="password" name="password" th:field="*{security.password}" required>
+                                <i class="fa-solid fa-key"></i></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" for="password">Confirmar Senha</label>
+                            <div class="currency-input">
+                                <input type="repeatPassword" class="form-input" id="repeatPassword" name="repeatPassword" th:field="*{security.repeatPassword}" required>
+                                <i class="fa-solid fa-key"></i></div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Cadastrar Dentista
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Máscaras para os campos
+        setupMasks();
+
+        // Configurar busca de CEP
+        setupCEPHandler();
+
+        // Configurar validação do formulário
+        setupFormValidation();
+
+        // Definir data atual como data de nascimento padrão (18 anos atrás)
+        setDefaultBirthDate();
+    });
+
+    // Configurar máscaras
+    function setupMasks() {
+        // Máscara para CPF
+        const cpfInput = document.getElementById('cpf');
+        if (cpfInput) {
+            cpfInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 11) value = value.substring(0, 11);
+
+                if (value.length <= 11) {
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                }
+
+                e.target.value = value;
+            });
+        }
+
+        // Máscara para telefone
+        const phoneInput = document.getElementById('phone');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 11) value = value.substring(0, 11);
+
+                if (value.length === 11) {
+                    value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                    value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                } else if (value.length === 10) {
+                    value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                    value = value.replace(/(\d{4})(\d)/, '$1-$2');
+                }
+
+                e.target.value = value;
+            });
+        }
+
+        // Máscara para CEP
+        const cepInput = document.getElementById('cep');
+        if (cepInput) {
+            cepInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 8) value = value.substring(0, 8);
+
+                if (value.length === 8) {
+                    value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                }
+
+                e.target.value = value;
+            });
+        }
+
+        // Máscara para salário
+        const salaryInput = document.getElementById('salary');
+        if (salaryInput) {
+            salaryInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+                value = (parseInt(value) || 0) / 100;
+
+                e.target.value = formatCurrency(value);
+            });
+        }
+
+        // Máscara para comissão
+        const commissionInput = document.getElementById('commission');
+        if (commissionInput) {
+            commissionInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/[^\d,]/g, '');
+                value = value.replace(',', '.');
+
+                // Limitar a 2 casas decimais
+                const parts = value.split('.');
+                if (parts.length > 1) {
+                    parts[1] = parts[1].substring(0, 2);
+                    value = parts.join('.');
+                }
+
+                e.target.value = value;
+            });
+        }
+    }
+
+    // Formatar valor monetário
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(value);
+    }
+
+    // Configurar busca de CEP
+    function setupCEPHandler() {
+        const cepInput = document.getElementById('cep');
+        const searchCepBtn = document.getElementById('searchCep');
+
+        if (cepInput && searchCepBtn) {
+            const handleCEP = function () {
+                const cep = cepInput.value.replace(/\D/g, '');
+
+                if (cep.length !== 8) {
+                    alert('CEP deve conter 8 dígitos!');
+                    return;
+                }
+
+                const originalContent = searchCepBtn.innerHTML;
+                searchCepBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                searchCepBtn.disabled = true;
+
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.erro) {
+                            alert('CEP não encontrado!');
+                            return;
+                        }
+
+                        // Preencher campos do endereço
+                        document.getElementById('logradouro').value = data.logradouro || '';
+                        document.getElementById('bairro').value = data.bairro || '';
+                        document.getElementById('localidade').value = data.localidade || '';
+                        document.getElementById('uf').value = data.uf || '';
+                        document.getElementById('complemento').value = data.complemento || '';
+
+                        // Focar no campo número
+                        document.getElementById('numero').focus();
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar CEP:', error);
+                        alert('Erro ao buscar o CEP. Verifique sua conexão e tente novamente.');
+                    })
+                    .finally(() => {
+                        searchCepBtn.innerHTML = originalContent;
+                        searchCepBtn.disabled = false;
+                    });
+            };
+
+            cepInput.addEventListener('blur', handleCEP);
+            searchCepBtn.addEventListener('click', handleCEP);
+        }
+    }
+
+    // Configurar validação do formulário
+    function setupFormValidation() {
+        const form = document.getElementById('dentistForm');
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                // Validação básica
+                const requiredFields = document.querySelectorAll('[required]');
+                let valid = true;
+
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        valid = false;
+                        field.classList.add('error-field');
+
+                        field.classList.add('shake');
+                        setTimeout(() => field.classList.remove('shake'), 500);
+                    } else {
+                        field.classList.remove('error-field');
+                    }
+                });
+
+                // Validação específica do CPF
+                const cpf = document.getElementById('cpf')?.value.replace(/\D/g, '');
+                if (cpf && !isValidCPF(cpf)) {
+                    valid = false;
+                    const cpfField = document.getElementById('cpf');
+                    cpfField.classList.add('error-field');
+                    cpfField.classList.add('shake');
+                    setTimeout(() => cpfField.classList.remove('shake'), 500);
+                    alert('Por favor, insira um CPF válido.');
+                }
+
+                // Validação específica do email
+                const email = document.getElementById('email')?.value;
+                if (email && !isValidEmail(email)) {
+                    valid = false;
+                    const emailField = document.getElementById('email');
+                    emailField.classList.add('error-field');
+                    emailField.classList.add('shake');
+                    setTimeout(() => emailField.classList.remove('shake'), 500);
+                    alert('Por favor, insira um email válido.');
+                }
+
+                // Validação da data de nascimento
+                const birthDate = document.getElementById('birthDate')?.value;
+                if (birthDate) {
+                    const birthDateObj = new Date(birthDate);
+                    const today = new Date();
+                    const age = today.getFullYear() - birthDateObj.getFullYear();
+
+                    if (age < 18) {
+                        valid = false;
+                        const birthDateField = document.getElementById('birthDate');
+                        birthDateField.classList.add('error-field');
+                        birthDateField.classList.add('shake');
+                        setTimeout(() => birthDateField.classList.remove('shake'), 500);
+                        alert('O dentista deve ter pelo menos 18 anos de idade.');
+                    }
+                }
+
+                // Validação da comissão (entre 0 e 100)
+                const commission = parseFloat(document.getElementById('commission')?.value.replace(',', '.') || 0);
+                if (commission < 0 || commission > 100) {
+                    valid = false;
+                    const commissionField = document.getElementById('commission');
+                    commissionField.classList.add('error-field');
+                    commissionField.classList.add('shake');
+                    setTimeout(() => commissionField.classList.remove('shake'), 500);
+                    alert('A comissão deve estar entre 0% e 100%.');
+                }
+
+                if (!valid) {
+                    e.preventDefault();
+                    alert('Por favor, preencha todos os campos obrigatórios corretamente.');
+                } else {
+                    // Formatar salário para BigDecimal
+                    const salaryInput = document.getElementById('salary');
+                    if (salaryInput) {
+                        const salaryValue = salaryInput.value.replace(/[^\d]/g, '');
+                        salaryInput.value = (parseInt(salaryValue) || 0) / 100;
+                    }
+
+                    // Formatar comissão para BigDecimal
+                    const commissionInput = document.getElementById('commission');
+                    if (commissionInput) {
+                        const commissionValue = commissionInput.value.replace(',', '.');
+                        commissionInput.value = parseFloat(commissionValue) || 0;
+                    }
+
+                    // Mostrar loading no botão de submit
+                    const submitBtn = document.querySelector('#dentistForm button[type="submit"]');
+                    if (submitBtn) {
+                        const originalText = submitBtn.innerHTML;
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cadastrando...';
+                        submitBtn.disabled = true;
+
+                        // Restaurar após 3 segundos
+                        setTimeout(() => {
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                        }, 3000);
+                    }
+                }
+            });
+        }
+    }
+
+    // Definir data de nascimento padrão (18 anos atrás)
+    function setDefaultBirthDate() {
+        const birthDateField = document.getElementById('birthDate');
+        if (birthDateField && !birthDateField.value) {
+            const today = new Date();
+            const eighteenYearsAgo = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+            birthDateField.value = eighteenYearsAgo.toISOString().split('T')[0];
+        }
+    }
+
+    // Função para validar email
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    // Função para validar CPF
+    function isValidCPF(cpf) {
+        if (cpf.length !== 11) return false;
+
+        // Elimina CPFs com valores iguais
+        if (/^(\d)\1+$/.test(cpf)) return false;
+
+        // Validação do dígito verificador
+        let sum = 0;
+        let remainder;
+
+        for (let i = 1; i <= 9; i++) {
+            sum = sum + parseInt(cpf.substring(i - 1, i)) * (11 - i);
+        }
+
+        remainder = (sum * 10) % 11;
+        if ((remainder === 10) || (remainder === 11)) remainder = 0;
+        if (remainder !== parseInt(cpf.substring(9, 10))) return false;
+
+        sum = 0;
+        for (let i = 1; i <= 10; i++) {
+            sum = sum + parseInt(cpf.substring(i - 1, i)) * (12 - i);
+        }
+
+        remainder = (sum * 10) % 11;
+        if ((remainder === 10) || (remainder === 11)) remainder = 0;
+        if (remainder !== parseInt(cpf.substring(10, 11))) return false;
+
+        return true;
+    }
+
+    // Adicionar CSS para animações
+    const style = document.createElement('style');
+    style.textContent = `
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .error-field {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2) !important;
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+<script src="./../../src/js/notification.js"></script>
+
+</body>
+</html>

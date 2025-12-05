@@ -10,6 +10,10 @@ document.getElementById('cpf').addEventListener('input', function(e) {
     e.target.value = value;
 });
 
+
+
+
+
 document.getElementById('phone').addEventListener('input', function(e) {
     let value = e.target.value.replace(/\D/g, '');
 

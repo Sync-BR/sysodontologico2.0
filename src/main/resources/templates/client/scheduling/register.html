@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamentos - DentalTech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./../../src/style/messages.css">
+
+    <style>
+        /* Reutilizando os mesmos estilos da página de dentistas */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6C63FF;
+            --secondary: #00D4FF;
+            --accent: #FF6B6B;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --dark: #1A1A2E;
+            --darker: #0F0F1B;
+            --light: #FFFFFF;
+            --gray: #8A8A9D;
+            --sidebar: #1A1A2E;
+            --gradient: linear-gradient(135deg, #6C63FF 0%, #00D4FF 100%);
+            --gradient-dark: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+        }
+
+        body {
+            background-color: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - reutilizando o mesmo */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 0;
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 28px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--light);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title h1 {
+            font-size: 24px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification-icon {
+            position: relative;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .notification-icon:hover {
+            color: var(--light);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Page Content */
+        .page-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* Header Actions */
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--light);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        /* Agendamentos Table */
+        .schedulings-table-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
+        }
+
+        .schedulings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .schedulings-table thead {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .schedulings-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .schedulings-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .schedulings-table tbody tr {
+            transition: all 0.3s;
+        }
+
+        .schedulings-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .scheduling-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .scheduling-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .scheduling-details h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .scheduling-details p {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .datetime-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-scheduled {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+
+        .status-cancelled {
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--accent);
+        }
+
+        .status-completed {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--secondary);
+        }
+
+        .person-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .person-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .person-details h5 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .person-details p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--gray);
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--light);
+        }
+
+        .action-btn.edit:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn.delete:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .action-btn.view:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: var(--gray);
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--darker);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--accent);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--light);
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--accent);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--light);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-select {
+            background-color: #0F0F1B;
+            color: white;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+            }
+
+            .sidebar-menu li {
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
+
+            .sidebar-menu a {
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+            }
+
+            .sidebar-menu a:hover, .sidebar-menu a.active {
+                border-left-color: transparent;
+                border-bottom-color: var(--primary);
+            }
+
+            .header-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .schedulings-table {
+                min-width: 800px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-content {
+                padding: 20px;
+            }
+
+            .schedulings-table-container {
+                padding: 15px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Filtros */
+        .filters-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 150px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--light);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Estilos para validação */
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .error-field {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2) !important;
+        }
+    </style>
+</head>
+<body>
+
+
+
+<div class="container">
+
+
+    <!-- Sidebar -->
+    <div th:replace="~{components/header :: header_Client}"></div>
+    <div th:replace="~{components/messages :: messages_Register_Dentist}"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div th:replace="~{components/header :: header_client_page}"></div>
+
+        <!-- Page Content -->
+        <section class="page-content">
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Buscar por paciente, dentista ou clínica...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+                <button type="button" class="btn btn-primary" id="newSchedulingBtn">
+                    <i class="fas fa-calendar-plus"></i>
+                    Novo Agendamento
+                </button>
+            </div>
+
+            <!-- Agendamentos Table -->
+            <div class="schedulings-table-container" th:if="${schedulings != null and !schedulings.isEmpty()}">
+                <table class="schedulings-table">
+                    <thead>
+                    <tr>
+                        <th>Data e Hora</th>
+                        <th>Paciente</th>
+                        <th>Dentista</th>
+                        <th>Clínica</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="scheduling : ${schedulings}"
+                        th:data-id="${scheduling?.id}"
+                        th:data-dentist-id="${scheduling?.dentist?.id}"
+                        th:data-patient-id="${scheduling?.patient?.id}"
+                        th:data-clinic-id="${scheduling?.clinic?.id}"
+                        th:data-date="${scheduling?.scheduledDate != null ? #temporals.format(scheduling.scheduledDate, 'yyyy-MM-dd') : ''}"
+                        th:data-time="${scheduling?.scheduledTime != null ? scheduling.scheduledTime.toString() : ''}">
+
+                        <td>
+                            <div class="datetime-badge">
+                                <i class="fas fa-calendar-alt" style="margin-right: 5px;"></i>
+                                <span th:text="${scheduling?.scheduledDate != null ? #temporals.format(scheduling.scheduledDate, 'dd/MM/yyyy') : '--'}"></span>
+                                <i class="fas fa-clock" style="margin-left: 10px; margin-right: 5px;"></i>
+                                <span th:text="${scheduling?.scheduledTime != null ? scheduling.scheduledTime : '--'}"></span>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="person-info">
+                                <div class="person-avatar" style="background: rgba(255, 107, 107, 0.1); color: var(--accent);">
+                                    <span th:text="${scheduling?.patient?.name != null ? scheduling.patient.name.substring(0,1) : 'P'}"></span>
+                                </div>
+                                <div class="person-details">
+                                    <h5 th:text="${scheduling?.patient?.name != null ? scheduling.patient.name : 'Paciente não informado'}"></h5>
+                                    <p th:text="${scheduling?.patient?.phone != null ? scheduling.patient.phone : '--'}"></p>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="person-info">
+                                <div class="person-avatar">
+                                    <span th:text="${scheduling?.dentist?.name != null ? scheduling.dentist.name.substring(0,1) : 'D'}"></span>
+                                </div>
+                                <div class="person-details">
+                                    <h5 th:text="${scheduling?.dentist?.name != null ? scheduling.dentist.name : 'Dentista não informado'}"></h5>
+                                    <p th:text="${scheduling?.dentist?.specialty != null ? scheduling.dentist.specialty : 'Dentista'}"></p>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="scheduling-details">
+                                <h4 th:text="${scheduling?.clinic?.name != null ? scheduling.clinic.name : 'Clínica não informada'}"></h4>
+                                <p th:text="${scheduling?.clinic?.address?.city != null ? scheduling.clinic.address.city : '--'}"></p>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="status-badge status-scheduled">
+                                <i class="fas fa-clock"></i> Agendado
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="table-actions">
+                                <button type="button" class="action-btn view" title="Visualizar">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="action-btn edit" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="action-btn delete" title="Cancelar">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" th:unless="${schedulings != null and !schedulings.isEmpty()}">
+                <div class="empty-icon">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h3 class="empty-title">Nenhum agendamento encontrado</h3>
+                <p>Comece criando um novo agendamento para seus pacientes.</p>
+                <br>
+                <button type="button" class="btn btn-primary" id="emptyNewSchedulingBtn">
+                    <i class="fas fa-calendar-plus"></i> Criar Primeiro Agendamento
+                </button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Modal para Criar/Editar Agendamento -->
+<div class="modal" id="schedulingModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalTitle">Novo Agendamento</h2>
+            <button type="button" class="close-modal" id="closeModalBtn">&times;</button>
+        </div>
+
+        <form id="schedulingForm" method="post">
+            <input type="hidden" id="schedulingId" name="id">
+
+            <div class="form-grid">
+
+
+                <!-- Dentista -->
+                <div class="form-group">
+                    <label class="form-label required" for="dentist">Dentista</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user-md"></i>
+
+                        <select class="form-select" id="dentist" name="dentistId" required >
+                            <option value="">Selecione um dentista...</option>
+                            <option th:each="dentist : ${list}"
+                                    th:value="${dentist.id}"
+                                    th:text="${dentist.name}"></option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- Paciente -->
+                <div class="form-group">
+                    <label class="form-label required" for="patient">Paciente</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user-injured"></i>
+                        <input type="text" class="form-input" id="cpf" name="patientCpf" placeholder="Informe o CPF do paciente" required>
+
+
+                    </div>
+                </div>
+
+                <!-- Data do Agendamento -->
+                <div class="form-group">
+                    <label class="form-label required" for="scheduledDate">Data</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar"></i>
+                        <input type="date" class="form-input" id="scheduledDate" name="scheduledDate" required>
+                    </div>
+                </div>
+
+                <!-- Hora do Agendamento -->
+                <div class="form-group">
+                    <label class="form-label required" for="scheduledTime">Hora</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-clock"></i>
+                        <input type="time" class="form-input" id="scheduledTime" name="scheduledTime" required>
+                    </div>
+                </div>
+
+                <!-- Observações -->
+                <div class="form-group full-width">
+                    <label class="form-label" for="observations">Observações</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-sticky-note"></i>
+                        <textarea class="form-input" id="observations" name="observations"
+                                  rows="3" placeholder="Observações sobre o agendamento..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-cancel" id="cancelModalBtn">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="submitButton">Salvar Agendamento</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Funções principais
+    function openNewSchedulingModal() {
+        console.log('Abrindo modal de novo agendamento');
+        const modalTitle = document.getElementById('modalTitle');
+        const submitButton = document.getElementById('submitButton');
+        const form = document.getElementById('schedulingForm');
+
+        modalTitle.textContent = 'Novo Agendamento';
+        submitButton.textContent = 'Salvar Agendamento';
+
+        // Resetar formulário
+        if (form) {
+            form.reset();
+            document.getElementById('schedulingId').value = '';
+        }
+
+        // Definir data atual como padrão
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.getElementById('scheduledDate');
+        if (dateInput) {
+            dateInput.value = today;
+        }
+
+        // Definir próxima hora disponível
+        const now = new Date();
+        const nextHour = new Date(now.getTime() + 60 * 60 * 1000);
+        const hours = String(nextHour.getHours()).padStart(2, '0');
+        const minutes = '00'; // Arredondar para hora cheia
+        const timeInput = document.getElementById('scheduledTime');
+        if (timeInput) {
+            timeInput.value = `${hours}:${minutes}`;
+        }
+
+        openModal();
+    }
+
+    function openEditSchedulingModal(element) {
+        console.log('Abrindo modal de edição');
+        const row = element.closest('tr');
+        if (!row) return;
+
+        const schedulingData = {
+            id: row.getAttribute('data-id') || '',
+            dentistId: row.getAttribute('data-dentist-id') || '',
+            patientId: row.getAttribute('data-patient-id') || '',
+            clinicId: row.getAttribute('data-clinic-id') || '',
+            date: row.getAttribute('data-date') || '',
+            time: row.getAttribute('data-time') || ''
+        };
+
+        configureEditSchedulingModal(schedulingData);
+        openModal();
+    }
+
+    function configureEditSchedulingModal(scheduling) {
+        const modalTitle = document.getElementById('modalTitle');
+        const submitButton = document.getElementById('submitButton');
+
+        modalTitle.textContent = 'Editar Agendamento';
+        submitButton.textContent = 'Atualizar Agendamento';
+
+        document.getElementById('schedulingId').value = scheduling.id || '';
+
+        if (scheduling.clinicId) {
+            document.getElementById('clinic').value = scheduling.clinicId;
+        }
+
+        if (scheduling.dentistId) {
+            document.getElementById('dentist').value = scheduling.dentistId;
+        }
+
+        if (scheduling.patientId) {
+            document.getElementById('patient').value = scheduling.patientId;
+        }
+
+        if (scheduling.date) {
+            document.getElementById('scheduledDate').value = scheduling.date;
+        }
+
+        if (scheduling.time) {
+            const timeParts = scheduling.time.split(':');
+            if (timeParts.length >= 2) {
+                document.getElementById('scheduledTime').value = `${timeParts[0]}:${timeParts[1]}`;
+            }
+        }
+    }
+
+    function viewScheduling(element) {
+        const row = element.closest('tr');
+        if (!row) return;
+
+        const schedulingId = row.getAttribute('data-id');
+        if (schedulingId) {
+            window.location.href = `/clinic/scheduling/view/${schedulingId}`;
+        }
+    }
+
+    function cancelScheduling(element) {
+        const row = element.closest('tr');
+        if (!row) return;
+
+        const schedulingId = row.getAttribute('data-id');
+        if (!schedulingId) return;
+
+        if (confirm('Tem certeza que deseja cancelar este agendamento?')) {
+            fetch(`/api/v1/clinic/scheduling/cancel/${schedulingId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        const statusBadge = row.querySelector('.status-badge');
+                        if (statusBadge) {
+                            statusBadge.className = 'status-badge status-cancelled';
+                            statusBadge.innerHTML = '<i class="fas fa-times"></i> Cancelado';
+                        }
+
+                        const actionButtons = row.querySelectorAll('.action-btn');
+                        actionButtons.forEach(btn => {
+                            if (btn.title === 'Editar' || btn.title === 'Cancelar') {
+                                btn.disabled = true;
+                                btn.style.opacity = '0.5';
+                                btn.style.cursor = 'not-allowed';
+                            }
+                        });
+
+                        alert('Agendamento cancelado com sucesso!');
+                    } else {
+                        alert('Erro ao cancelar agendamento.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao cancelar agendamento.');
+                });
+        }
+    }
+
+    function openModal() {
+        const modal = document.getElementById('schedulingModal');
+        if (modal) {
+            modal.classList.add('active');
+        }
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('schedulingModal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    // Configurar eventos quando o DOM carregar
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM carregado - configurando eventos');
+
+        // Botão novo agendamento
+        const newSchedulingBtn = document.getElementById('newSchedulingBtn');
+        if (newSchedulingBtn) {
+            newSchedulingBtn.addEventListener('click', openNewSchedulingModal);
+        }
+
+        // Botão novo agendamento no estado vazio
+        const emptyNewSchedulingBtn = document.getElementById('emptyNewSchedulingBtn');
+        if (emptyNewSchedulingBtn) {
+            emptyNewSchedulingBtn.addEventListener('click', openNewSchedulingModal);
+        }
+
+        // Botões de fechar modal
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', closeModal);
+        }
+
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+        if (cancelModalBtn) {
+            cancelModalBtn.addEventListener('click', closeModal);
+        }
+
+        // Fechar modal ao clicar fora
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('schedulingModal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Configurar eventos dos botões de ação na tabela
+        setupTableActions();
+
+        // Configurar busca
+        setupSearch();
+
+        // Configurar validação do formulário
+        setupFormValidation();
+    });
+
+    function setupTableActions() {
+        // Usar delegação de eventos para os botões da tabela
+        document.addEventListener('click', function(e) {
+            const target = e.target;
+
+            // Encontrar o botão clicado
+            const actionBtn = target.closest('.action-btn');
+            if (!actionBtn) return;
+
+            const row = actionBtn.closest('tr');
+            if (!row) return;
+
+            if (actionBtn.classList.contains('view')) {
+                viewScheduling(actionBtn);
+            } else if (actionBtn.classList.contains('edit')) {
+                openEditSchedulingModal(actionBtn);
+            } else if (actionBtn.classList.contains('delete')) {
+                cancelScheduling(actionBtn);
+            }
+        });
+    }
+
+    function setupSearch() {
+        const searchInput = document.querySelector('.search-input');
+        if (!searchInput) return;
+
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const schedulingRows = document.querySelectorAll('.schedulings-table tbody tr');
+
+            schedulingRows.forEach(row => {
+                const patientName = row.querySelector('.person-info:nth-child(1) h5')?.textContent.toLowerCase() || '';
+                const dentistName = row.querySelector('.person-info:nth-child(2) h5')?.textContent.toLowerCase() || '';
+                const clinicName = row.querySelector('.scheduling-details h4')?.textContent.toLowerCase() || '';
+
+                if (patientName.includes(searchTerm) ||
+                    dentistName.includes(searchTerm) ||
+                    clinicName.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    function setupFormValidation() {
+        const form = document.getElementById('schedulingForm');
+        if (!form) return;
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const requiredFields = form.querySelectorAll('[required]');
+            let valid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    valid = false;
+                    field.classList.add('error-field', 'shake');
+
+                    setTimeout(() => {
+                        field.classList.remove('shake');
+                    }, 500);
+                } else {
+                    field.classList.remove('error-field');
+                }
+            });
+
+            // Validar se a data é futura
+            const dateInput = document.getElementById('scheduledDate');
+            const timeInput = document.getElementById('scheduledTime');
+
+            if (dateInput && dateInput.value && timeInput && timeInput.value) {
+                const selectedDateTime = new Date(`${dateInput.value}T${timeInput.value}`);
+                const now = new Date();
+
+                if (selectedDateTime < now) {
+                    valid = false;
+                    alert('A data e hora do agendamento devem ser futuras!');
+
+                    dateInput.classList.add('error-field', 'shake');
+                    timeInput.classList.add('error-field', 'shake');
+
+                    setTimeout(() => {
+                        dateInput.classList.remove('shake');
+                        timeInput.classList.remove('shake');
+                    }, 500);
+                }
+            }
+
+            if (!valid) {
+                alert('Por favor, preencha todos os campos obrigatórios corretamente.');
+                return;
+            }
+
+            // Se tudo estiver válido, enviar o formulário
+            const submitBtn = document.querySelector('#schedulingForm button[type="submit"]');
+            if (submitBtn) {
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+                submitBtn.disabled = true;
+
+                // Enviar formulário
+                const formData = new FormData(form);
+                const formObject = {};
+                formData.forEach((value, key) => {
+                    formObject[key] = value;
+                });
+
+                console.log('Enviando dados:', formObject);
+
+                // Simular envio (substitua pelo seu endpoint real)
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+
+                    // Fechar modal após sucesso
+                    closeModal();
+
+                    // Recarregar página para ver as mudanças
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+
+                    alert('Agendamento salvo com sucesso!');
+                }, 1500);
+            }
+        });
+    }
+
+    // Garantir que as funções estão disponíveis globalmente
+    window.openNewSchedulingModal = openNewSchedulingModal;
+    window.openEditSchedulingModal = openEditSchedulingModal;
+    window.viewScheduling = viewScheduling;
+    window.cancelScheduling = cancelScheduling;
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+</script>
+
+
+<script src="./../src/js/mask.js"></script>
+
+</body>
+</html>

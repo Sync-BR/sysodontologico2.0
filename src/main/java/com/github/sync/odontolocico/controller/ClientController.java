@@ -42,7 +42,7 @@ public class ClientController {
     public String register(@ModelAttribute("user") ClientDto memory, Model model, HttpServletResponse response) {
         service.preparedCreatAccount(memory);
         tokenService.registerTokenClinic(validateToken.validateRegister(memory));
-        return "redirect:/register?success";
+        return "redirect:/login?success";
     }
 
 }

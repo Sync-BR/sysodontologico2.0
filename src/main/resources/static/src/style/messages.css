@@ -28,6 +28,11 @@
     background: linear-gradient(135deg, #ff4444, #cc0000);
 }
 
+.notification.alert {
+    background: linear-gradient(135deg, #ffe94a, rgba(241, 222, 10, 0.93));
+    color: black;
+}
+
 .notification.show {
     transform: translateX(0);
     opacity: 1;

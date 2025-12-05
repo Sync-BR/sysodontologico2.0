@@ -63,4 +63,9 @@ public class SpecialtyService extends ServiceImp<SpecialtyEntity, SpecialtyDto> 
         }
         return dtoList;
     }
+
+    @Override
+    public long count(HttpServletRequest object) {
+        return repository.countAllByClinic_ClinicId(validateAuth.validate(object).getClinic().getId());
+    }
 }

@@ -30,6 +30,13 @@ public class ErrorsBuilder {
         model.addAttribute("description", "Não é possivel completar essa requisição, o usuário não possuir uma clinica.");
 
     }
+
+    public void errorFailOperationDate(Model model) {
+        model.addAttribute("code", "27ED001");
+        model.addAttribute("title", "Erro de dados");
+        model.addAttribute("description", "Não conseguimnos completar sua solicatação por falta de dados");
+    }
+
     public void errorUnknown(Model model) {
         model.addAttribute("code", "27ED00");
         model.addAttribute("title", "Erro desconhecido");

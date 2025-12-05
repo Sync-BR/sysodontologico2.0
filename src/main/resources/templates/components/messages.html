@@ -58,3 +58,42 @@
         <button class="close-btn">&times;</button>
     </div>
 </div>
+
+<div class="notification-container" id="notificationContainer" th:fragment="messages_Patient">
+    <!-- Notificação de Sucesso -->
+    <div th:if="${param.success}" class="notification success" id="successNotification">
+        <span class="icon">✓</span>
+        <span class="message">Paciente adicionada com sucesso.</span>
+        <button class="close-btn">&times;</button>
+    </div>
+
+    <div th:if="${param.cpfExisting}" class="notification alert" id="errorNotification">
+        <span class="icon">⚠</span>
+        <span class="message">Paciente já está registrado na clinica.</span>
+        <button class="close-btn">&times;</button>
+    </div>
+
+</div>
+
+
+<div class="notification-container" id="notificationContainer" th:fragment="messages_Register_Dentist">
+    <!-- Notificação de Sucesso -->
+    <div th:if="${param.success}" class="notification success" id="successNotification">
+        <span class="icon">✓</span>
+        <span class="message">Dentista adicionada com sucesso.</span>
+        <button class="close-btn">&times;</button>
+    </div>
+
+    <div th:if="${param.cpfExisting}" class="notification alert" id="errorNotification">
+        <span class="icon">⚠</span>
+        <span class="message">CPF Já vinculado a um dentista</span>
+        <button class="close-btn">&times;</button>
+    </div>
+
+    <div th:if="${param.emailExisting}" class="notification alert" id="errorNotification">
+        <span class="icon">⚠</span>
+        <span class="message">Email Já vinculado a um dentista</span>
+        <button class="close-btn">&times;</button>
+    </div>
+
+</div>

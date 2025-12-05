@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Especialidades - DentalTech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./../src/style/messages.css">
+    <style>
+        /* Reset e configurações gerais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6C63FF; /* Roxo tecnológico */
+            --secondary: #00D4FF; /* Ciano brilhante */
+            --accent: #FF6B6B; /* Coral vibrante */
+            --success: #4CAF50; /* Verde sucesso */
+            --warning: #FF9800; /* Laranja alerta */
+            --dark: #1A1A2E; /* Azul escuro quase preto */
+            --darker: #0F0F1B; /* Fundo mais escuro */
+            --light: #FFFFFF; /* Branco puro */
+            --gray: #8A8A9D; /* Cinza para texto secundário */
+            --sidebar: #1A1A2E; /* Cor do sidebar */
+            --gradient: linear-gradient(135deg, #6C63FF 0%, #00D4FF 100%);
+            --gradient-dark: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+        }
+
+        body {
+            background-color: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 0;
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 28px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--light);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title h1 {
+            font-size: 24px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .notification-icon {
+            position: relative;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .notification-icon:hover {
+            color: var(--light);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .user-info h3 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* Page Content */
+        .page-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* Header Actions */
+        .header-actions {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--light);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        /* Specialties Grid */
+        .specialties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .specialty-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .specialty-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(108, 99, 255, 0.3);
+        }
+
+        .specialty-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .specialty-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .specialty-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--gray);
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--light);
+        }
+
+        .action-btn.edit:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn.delete:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .specialty-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+
+        .specialty-description {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .specialty-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .specialty-dentists {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--gray);
+            font-size: 13px;
+        }
+
+        .specialty-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            color: var(--success);
+        }
+
+        .status-inactive {
+            color: var(--accent);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--darker);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--light);
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--light);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: var(--gray);
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+            }
+
+            .sidebar-menu li {
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
+
+            .sidebar-menu a {
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+            }
+
+            .sidebar-menu a:hover, .sidebar-menu a.active {
+                border-left-color: transparent;
+                border-bottom-color: var(--primary);
+            }
+
+            .header-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .specialties-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Sidebar -->
+    <div th:replace="~{components/messages :: messages_Specialty}"></div>
+    <div th:replace="~{components/header :: header_Client}"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div th:replace="~{components/header :: header_client_page}"></div>
+
+        <!-- Page Content -->
+        <section class="page-content">
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Buscar especialidade...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+                <button class="btn btn-primary" onclick="openModal('add')">
+                    <i class="fas fa-plus"></i>
+                    Nova Especialidade
+                </button>
+            </div>
+
+            <!-- Specialties Grid -->
+            <div class="specialties-grid" th:if="${listSpecialty != null and !listSpecialty.isEmpty()}">
+                <div th:each="specialty : ${listSpecialty}" class="specialty-card"
+                     th:data-id="${specialty.id}"
+                     th:data-title="${specialty.title}"
+                     th:data-description="${specialty.description}"
+                     th:data-active="${specialty.active}">
+
+                    <div class="specialty-header">
+                        <div class="specialty-icon">
+                            <i class="fas fa-tooth"></i>
+                        </div>
+
+                        <div class="specialty-actions">
+                            <button class="action-btn edit" onclick="openModal('edit', this)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <form th:action="@{/api/v1/clinic/specialty/delete/{id}(id=${specialty.id})}" method="post" style="display: inline;">
+                                <button type="submit" class="action-btn delete" onclick="return confirm('Tem certeza que deseja excluir esta especialidade?')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Nome -->
+                    <h3 class="specialty-name" th:text="${specialty.title}">Nome</h3>
+
+                    <!-- Descrição -->
+                    <p class="specialty-description" th:text="${specialty.description}">
+                        Descrição...
+                    </p>
+
+                    <!-- Meta -->
+                    <div class="specialty-meta">
+                        <div class="specialty-dentists">
+                            <i class="fas fa-user-md"></i>
+                            <!-- <span th:text="${specialty.dentistsCount != null ? specialty.dentistsCount + ' dentistas' : '0 dentistas'}"></span> -->
+                        </div>
+
+                        <div class="specialty-status" th:classappend="${specialty.active} ? 'status-active' : 'status-inactive'">
+                            <i class="fas fa-circle"></i>
+                            <span th:text="${specialty.active} ? 'Ativa' : 'Inativa'"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" th:if="${listSpecialty == null or listSpecialty.isEmpty()}">
+                <div class="empty-icon">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <h3 class="empty-title">Nenhuma especialidade cadastrada</h3>
+                <p>Comece adicionando a primeira especialidade.</p>
+                <br>
+                <button class="btn btn-primary" onclick="openModal('add')">
+                    <i class="fas fa-plus"></i> Nova Especialidade
+                </button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Modal para Adicionar/Editar Especialidade -->
+<div class="modal" id="specialtyModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalTitle">Nova Especialidade</h2>
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+        </div>
+
+        <form id="specialtyForm" th:action="@{/api/v1/clinic/specialty/add}" method="post" th:object="${newSpecialty}">
+            <input type="hidden" id="specialtyId" name="id" th:field="*{id}">
+
+            <div class="form-group">
+                <label class="form-label" for="specialtyName">Nome da Especialidade</label>
+                <input type="text" class="form-input" id="specialtyName" th:field="*{title}" placeholder="Ex: Ortodontia" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="specialtyDescription">Descrição</label>
+                <textarea class="form-textarea" id="specialtyDescription" th:field="*{description}" placeholder="Descreva a especialidade..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="specialtyStatus">Status</label>
+                <select class="form-select" id="specialtyStatus" name="active" th:field="*{active}">
+                    <option value="true">Ativa</option>
+                    <option value="false">Inativa</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="submitButton">Salvar Especialidade</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Variável para controlar o modo do modal (add/edit)
+    let currentMode = 'add';
+
+    // Função para abrir o modal
+    function openModal(mode, element = null) {
+        const modal = document.getElementById('specialtyModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const form = document.getElementById('specialtyForm');
+        const submitButton = document.getElementById('submitButton');
+
+        currentMode = mode;
+
+        if (mode === 'add') {
+            // Modo adicionar - limpar formulário
+            modalTitle.textContent = 'Nova Especialidade';
+           // document.getElementById('specialtyId').value = '';
+            form.reset();
+            form.action = '/api/v1/clinic/specialty/add';
+            submitButton.textContent = 'Salvar Especialidade';
+        } else if (mode === 'edit' && element) {
+            // Modo editar - preencher formulário com dados do data-attributes
+            const specialtyCard = element.closest('.specialty-card');
+            const specialtyId = specialtyCard.getAttribute('data-id');
+            const specialtyTitle = specialtyCard.getAttribute('data-title');
+            const specialtyDescription = specialtyCard.getAttribute('data-description');
+            const specialtyActive = specialtyCard.getAttribute('data-active');
+
+            modalTitle.textContent = 'Editar Especialidade';
+            document.getElementById('specialtyId').value = specialtyId;
+            document.getElementById('specialtyName').value = specialtyTitle;
+            document.getElementById('specialtyDescription').value = specialtyDescription;
+            form.action = '/api/v1/clinic/specialty/edit';
+            submitButton.textContent = 'Atualizar Especialidade';
+        }
+
+        modal.classList.add('active');
+    }
+
+    // Função para fechar o modal
+    function closeModal() {
+        document.getElementById('specialtyModal').classList.remove('active');
+    }
+
+    // Fechar modal ao clicar fora
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('specialtyModal');
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Busca em tempo real
+    document.querySelector('.search-input').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const specialtyCards = document.querySelectorAll('.specialty-card');
+
+        specialtyCards.forEach(card => {
+            const specialtyName = card.querySelector('.specialty-name').textContent.toLowerCase();
+            const specialtyDescription = card.querySelector('.specialty-description').textContent.toLowerCase();
+
+            if (specialtyName.includes(searchTerm) || specialtyDescription.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+
+    // Validação do formulário antes de enviar
+    document.getElementById('specialtyForm').addEventListener('submit', function(e) {
+        const title = document.getElementById('specialtyName').value.trim();
+        const description = document.getElementById('specialtyDescription').value.trim();
+
+        if (!title) {
+            e.preventDefault();
+            alert('Por favor, preencha o nome da especialidade.');
+            document.getElementById('specialtyName').focus();
+            return;
+        }
+
+        if (!description) {
+            e.preventDefault();
+            alert('Por favor, preencha a descrição da especialidade.');
+            document.getElementById('specialtyDescription').focus();
+            return;
+        }
+
+        // Se tudo estiver válido, o formulário será enviado
+    });
+</script>
+
+<script src="./../src/js/notification.js"></script>
+
+</body>
+</html>

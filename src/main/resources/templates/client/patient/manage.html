@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacientes - DentalTech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./../../src/style/messages.css">
+
+    <style>
+        /* Reset e configurações gerais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6C63FF; /* Roxo tecnológico */
+            --secondary: #00D4FF; /* Ciano brilhante */
+            --accent: #FF6B6B; /* Coral vibrante */
+            --success: #4CAF50; /* Verde sucesso */
+            --warning: #FF9800; /* Laranja alerta */
+            --dark: #1A1A2E; /* Azul escuro quase preto */
+            --darker: #0F0F1B; /* Fundo mais escuro */
+            --light: #FFFFFF; /* Branco puro */
+            --gray: #8A8A9D; /* Cinza para texto secundário */
+            --sidebar: #1A1A2E; /* Cor do sidebar */
+            --gradient: linear-gradient(135deg, #6C63FF 0%, #00D4FF 100%);
+            --gradient-dark: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+        }
+
+        body {
+            background-color: var(--darker);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 0;
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 28px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--light);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title h1 {
+            font-size: 24px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification-icon {
+            position: relative;
+            color: var(--gray);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .notification-icon:hover {
+            color: var(--light);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .user-info h3 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* Page Content */
+        .page-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* Header Actions */
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--light);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        /* Patients Table */
+        .patients-table-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
+        }
+
+        .patients-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .patients-table thead {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .patients-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .patients-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .patients-table tbody tr {
+            transition: all 0.3s;
+        }
+
+        .patients-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .patient-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .patient-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .patient-details h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .patient-details p {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+
+        .status-inactive {
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--accent);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--gray);
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--light);
+        }
+
+        .action-btn.edit:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn.delete:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .action-btn.view:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: var(--gray);
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--darker);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--accent);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--light);
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--accent);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--light);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+        }
+
+        .form-select{
+            background-color: #0F0F1B;
+            color: white;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+            }
+
+            .sidebar-menu li {
+                margin-bottom: 0;
+                margin-right: 10px;
+            }
+
+            .sidebar-menu a {
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+            }
+
+            .sidebar-menu a:hover, .sidebar-menu a.active {
+                border-left-color: transparent;
+                border-bottom-color: var(--primary);
+            }
+
+            .header-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .patients-table {
+                min-width: 600px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-content {
+                padding: 20px;
+            }
+
+            .patients-table-container {
+                padding: 15px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{components/header :: header_Client}"></div>
+    <div th:replace="~{components/messages :: messages_Patient}"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div th:replace="~{components/header :: header_client_page}"></div>
+
+        <!-- Page Content -->
+        <section class="page-content">
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Buscar paciente por nome, CPF ou telefone...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+                <a th:href="@{/clinic/patient/add}" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i>
+                    Novo Paciente
+                </a>
+            </div>
+
+            <!-- Patients Table -->
+            <div class="patients-table-container" th:if="${listPatient != null and !listPatient.isEmpty()}">
+                <table class="patients-table">
+                    <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>CPF</th>
+                        <th>Telefone</th>
+                        <th>Data de Nascimento</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="patient : ${listPatient}"
+                        th:data-id="${patient.id}"
+                        th:data-name="${patient.name}"
+                        th:data-email="${patient.email}"
+                        th:data-phone="${patient.phone}"
+                        th:data-cellphone="${patient.cellPhone}"
+                        th:data-birthdate="${patient.birthDate != null ? #temporals.format(patient.birthDate, 'yyyy-MM-dd') : ''}"
+                        th:data-cpf="${patient.cpf}"
+                        th:data-rg="${patient.rg}"
+                        th:data-gender="${patient.gender}"
+                        th:data-logradouro="${patient.address?.logradouro ?: ''}"
+                        th:data-numero="${patient.address?.numero ?: ''}"
+                        th:data-bairro="${patient.address?.bairro ?: ''}"
+                        th:data-localidade="${patient.address?.localidade ?: ''}"
+                        th:data-uf="${patient.address?.uf ?: ''}"
+                        th:data-cep="${patient.address?.cep ?: ''}"
+                        th:data-complemento="${patient.address?.complemento ?: ''}"
+                        th:data-healthinsurance="${patient.plan?.plan ?: ''}"
+                        th:data-plannumber="${patient.plan?.planNumber ?: ''}"
+                        th:data-planexpiration="${patient.plan?.planExpiration != null ? #temporals.format(patient.plan.planExpiration, 'yyyy-MM-dd') : ''}"
+                        th:data-allergies="${patient.medicalHistory?.allergies ?: ''}"
+                        th:data-comorbidities="${patient.medicalHistory?.comorbidities ?: ''}"
+                        th:data-medications="${patient.medicalHistory?.medications ?: ''}"
+                        th:data-observations="${patient.medicalHistory?.observations ?: ''}"
+                        th:data-registrationdate="${patient.registrationDate != null ? #temporals.format(patient.registrationDate, 'yyyy-MM-dd') : ''}"
+                        th:data-status="${patient.active}">
+
+                        <td>
+                            <div class="patient-info">
+                                <div class="patient-avatar">
+                                    <span th:text="${patient.name != null ? patient.name.substring(0,1) : ''}"></span>
+                                </div>
+                                <div class="patient-details">
+                                    <h4 th:text="${patient.name}"></h4>
+                                    <p th:text="${patient.email}"></p>
+                                </div>
+                            </div>
+                        </td>
+                        <td th:text="${patient.cpf}"></td>
+                        <td th:text="${patient.phone}"></td>
+                        <td th:text="${patient.birthDate != null ? #temporals.format(patient.birthDate, 'dd/MM/yyyy') : 'Não informada'}"></td>
+                        <td>
+                                <span th:class="${patient.active} ? 'status-badge status-active' : 'status-badge status-inactive'">
+                                    <span th:text="${patient.active} ? 'Ativo' : 'Inativo'"></span>
+                                </span>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="action-btn view" title="Visualizar" th:onclick="'viewPatient(\'' + ${patient.id} + '\')'">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn edit" title="Editar" onclick="openEditModal(this)">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <form th:action="@{/api/v1/clinic/patient/delete/{id}(id=${patient.id})}" method="post" style="display: inline;">
+                                    <button type="submit" class="action-btn delete" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este paciente?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" th:if="${listPatient == null or listPatient.isEmpty()}">
+                <div class="empty-icon">
+                    <i class="fas fa-user-injured"></i>
+                </div>
+                <h3 class="empty-title">Nenhum paciente cadastrado</h3>
+                <p>Comece adicionando o primeiro paciente da sua clínica.</p>
+                <br>
+                <a th:href="@{/clinic/patient/add}" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Adicionar Primeiro Paciente
+                </a>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Modal para Editar Paciente -->
+<div class="modal" id="patientModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalTitle">Editar Paciente</h2>
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+        </div>
+
+        <form id="patientForm" th:action="@{/api/v1/clinic/patient/edit}" method="post">
+            <input type="hidden" id="patientId" name="id">
+
+            <div class="form-grid">
+                <!-- Nome Completo -->
+                <div class="form-group">
+                    <label class="form-label required" for="name">Nome Completo</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" class="form-input" id="name" name="name" placeholder="Digite o nome completo" required>
+                    </div>
+                </div>
+
+                <!-- CPF e RG -->
+                <div class="form-group">
+                    <label class="form-label required" for="cpf">CPF</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" class="form-input" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="rg">RG</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" class="form-input" id="rg" name="rg" placeholder="Digite o RG">
+                    </div>
+                </div>
+
+                <!-- Data de Nascimento e Gênero -->
+                <div class="form-group">
+                    <label class="form-label required" for="birthDate">Data de Nascimento</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar"></i>
+                        <input type="date" class="form-input" id="birthDate" name="birthDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required" for="gender">Gênero</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-venus-mars"></i>
+                        <select class="form-select" id="gender" name="gender" required>
+                            <option value="">Selecione...</option>
+                            <option value="MALE">Masculino</option>
+                            <option value="FEMALE">Feminino</option>
+                            <option value="OTHER">Outro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- E-mail -->
+                <div class="form-group">
+                    <label class="form-label required" for="email">E-mail</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" class="form-input" id="email" name="email" placeholder="Digite o e-mail" required>
+                    </div>
+                </div>
+
+                <!-- Telefone e Celular -->
+                <div class="form-group">
+                    <label class="form-label" for="phone">Telefone</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" class="form-input" id="phone" name="phone" placeholder="(00) 0000-0000">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required" for="cellPhone">Celular</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                        <input type="tel" class="form-input" id="cellPhone" name="cellPhone" placeholder="(00) 00000-0000" required>
+                    </div>
+                </div>
+
+                <!-- Endereço - Busca por CEP -->
+                <div class="form-group">
+                    <label class="form-label" for="cep">CEP</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" class="form-input" id="cep" name="address.cep" placeholder="00000-000">
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="logradouro">Logradouro</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-road"></i>
+                        <input type="text" class="form-input" id="logradouro" name="address.logradouro" placeholder="Rua, Avenida, etc.">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="numero">Número</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-hashtag"></i>
+                        <input type="text" class="form-input" id="numero" name="address.numero" placeholder="Número">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="complemento">Complemento</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-building"></i>
+                        <input type="text" class="form-input" id="complemento" name="address.complemento" placeholder="Apto, Sala, etc.">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bairro">Bairro</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-map-pin"></i>
+                        <input type="text" class="form-input" id="bairro" name="address.bairro" placeholder="Bairro">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="localidade">Cidade</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-city"></i>
+                        <input type="text" class="form-input" id="localidade" name="address.localidade" placeholder="Cidade">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="uf">UF</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-flag"></i>
+                        <select class="form-select" id="uf" name="address.uf">
+                            <option value="">Selecione...</option>
+                            <option value="AC">AC</option>
+                            <option value="AL">AL</option>
+                            <option value="AP">AP</option>
+                            <option value="AM">AM</option>
+                            <option value="BA">BA</option>
+                            <option value="CE">CE</option>
+                            <option value="DF">DF</option>
+                            <option value="ES">ES</option>
+                            <option value="GO">GO</option>
+                            <option value="MA">MA</option>
+                            <option value="MT">MT</option>
+                            <option value="MS">MS</option>
+                            <option value="MG">MG</option>
+                            <option value="PA">PA</option>
+                            <option value="PB">PB</option>
+                            <option value="PR">PR</option>
+                            <option value="PE">PE</option>
+                            <option value="PI">PI</option>
+                            <option value="RJ">RJ</option>
+                            <option value="RN">RN</option>
+                            <option value="RS">RS</option>
+                            <option value="RO">RO</option>
+                            <option value="RR">RR</option>
+                            <option value="SC">SC</option>
+                            <option value="SP">SP</option>
+                            <option value="SE">SE</option>
+                            <option value="TO">TO</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Plano de Saúde -->
+                <div class="form-group">
+                    <label class="form-label" for="healthInsurance">Convênio</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-heartbeat"></i>
+                        <select class="form-select" id="healthInsurance" name="plan.plan">
+                            <option value="">Selecione...</option>
+                            <option value="UNIMED">UNIMED</option>
+                            <option value="AMIL">AMIL</option>
+                            <option value="BRADESCO_SAUDE">BRADESCO SAÚDE</option>
+                            <option value="SULAMERICA">SULAMÉRICA</option>
+                            <option value="HAPVIDA">HAPVIDA</option>
+                            <option value="NOTREDAME_INTERMEDICA">NOTRE DAME INTERMÉDICA</option>
+                            <option value="PORTO_SEGURO_SAUDE">PORTO SEGURO SAÚDE</option>
+                            <option value="OMINT">OMINT</option>
+                            <option value="GOLDEN_CROSS">GOLDEN CROSS</option>
+                            <option value="PREVENT_SENIOR">PREVENT SENIOR</option>
+                            <option value="CAIXA_SAUDE">CAIXA SAÚDE</option>
+                            <option value="SAO_CRISTOVAO">SÃO CRISTÓVÃO</option>
+                            <option value="GREENLINE">GREENLINE</option>
+                            <option value="BIOVIDA">BIOVIDA</option>
+                            <option value="SOMPO_SAUDE">SOMPO SAÚDE</option>
+                            <option value="MED_SENIOR">MED SENIOR</option>
+                            <option value="VITALLIS">VITALLIS</option>
+                            <option value="ALLIANZ_SAUDE">ALLIANZ SAÚDE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="planNumber">Número do Plano</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-id-card-alt"></i>
+                        <input type="text" class="form-input" id="planNumber" name="plan.planNumber" placeholder="Número do plano">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="planExpiration">Validade do Plano</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar-check"></i>
+                        <input type="date" class="form-input" id="planExpiration" name="plan.planExpiration">
+                    </div>
+                </div>
+
+
+
+                <!-- Data de Registro e Status -->
+                <div class="form-group">
+                    <label class="form-label required" for="registrationDate">Data de Registro</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="date" class="form-input" id="registrationDate" name="registrationDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required" for="patientStatus">Status</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-toggle-on"></i>
+                        <select class="form-select" id="patientStatus" name="active" required>
+                            <option value="true">Ativo</option>
+                            <option value="false">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="submitButton">Atualizar Paciente</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let currentMode = 'edit';
+    let currentRow = null;
+
+    // Função para abrir o modal no modo edição
+    function openEditModal(element) {
+        const row = element.closest('tr');
+        currentRow = row;
+
+        // Obter todos os dados dos data-attributes
+        const patientData = {
+            id: row.getAttribute('data-id') || '',
+            name: row.getAttribute('data-name') || '',
+            email: row.getAttribute('data-email') || '',
+            phone: row.getAttribute('data-phone') || '',
+            cellPhone: row.getAttribute('data-cellphone') || '',
+            birthDate: row.getAttribute('data-birthdate') || '',
+            cpf: row.getAttribute('data-cpf') || '',
+            rg: row.getAttribute('data-rg') || '',
+            gender: row.getAttribute('data-gender') || '',
+            logradouro: row.getAttribute('data-logradouro') || '',
+            numero: row.getAttribute('data-numero') || '',
+            bairro: row.getAttribute('data-bairro') || '',
+            localidade: row.getAttribute('data-localidade') || '',
+            uf: row.getAttribute('data-uf') || '',
+            cep: row.getAttribute('data-cep') || '',
+            complemento: row.getAttribute('data-complemento') || '',
+            healthInsurance: row.getAttribute('data-healthinsurance') || '',
+            planNumber: row.getAttribute('data-plannumber') || '',
+            planExpiration: row.getAttribute('data-planexpiration') || '',
+            allergies: row.getAttribute('data-allergies') || '',
+            comorbidities: row.getAttribute('data-comorbidities') || '',
+            medications: row.getAttribute('data-medications') || '',
+            observations: row.getAttribute('data-observations') || '',
+            registrationDate: row.getAttribute('data-registrationdate') || '',
+            active: row.getAttribute('data-status') === 'true'
+        };
+
+        console.log('Dados do paciente carregados:', patientData); // Para debug
+
+        // Configurar o modal para modo edição
+        configureEditModal(patientData);
+
+        // Abrir o modal
+        openModal();
+    }
+
+    // Função para configurar o modal com os dados do paciente
+    function configureEditModal(patient) {
+        const modalTitle = document.getElementById('modalTitle');
+        const form = document.getElementById('patientForm');
+        const submitButton = document.getElementById('submitButton');
+
+        // Configurar título e ação do formulário
+        modalTitle.textContent = 'Editar Paciente';
+        submitButton.textContent = 'Atualizar Paciente';
+
+        // Preencher campos básicos
+        document.getElementById('patientId').value = patient.id;
+        document.getElementById('name').value = patient.name;
+        document.getElementById('email').value = patient.email;
+        document.getElementById('phone').value = patient.phone;
+        document.getElementById('cellPhone').value = patient.cellPhone;
+        document.getElementById('cpf').value = patient.cpf;
+        document.getElementById('rg').value = patient.rg;
+
+        // Data de nascimento
+        if (patient.birthDate) {
+            document.getElementById('birthDate').value = patient.birthDate;
+        }
+
+        // Gênero - selecionar a opção correta
+        if (patient.gender) {
+            const genderSelect = document.getElementById('gender');
+            genderSelect.value = patient.gender;
+        }
+
+        // Status
+        document.getElementById('patientStatus').value = patient.active ? 'true' : 'false';
+
+        // Endereço
+        document.getElementById('logradouro').value = patient.logradouro;
+        document.getElementById('numero').value = patient.numero;
+        document.getElementById('bairro').value = patient.bairro;
+        document.getElementById('localidade').value = patient.localidade;
+        document.getElementById('complemento').value = patient.complemento;
+        document.getElementById('cep').value = patient.cep;
+
+        // UF - selecionar a opção correta
+        if (patient.uf) {
+            const ufSelect = document.getElementById('uf');
+            ufSelect.value = patient.uf;
+        }
+
+        // Plano de saúde
+        if (patient.healthInsurance) {
+            const healthInsuranceSelect = document.getElementById('healthInsurance');
+            healthInsuranceSelect.value = patient.healthInsurance;
+        }
+
+        document.getElementById('planNumber').value = patient.planNumber;
+
+        if (patient.planExpiration) {
+            document.getElementById('planExpiration').value = patient.planExpiration;
+        }
+
+
+        // Data de registro
+        if (patient.registrationDate) {
+            document.getElementById('registrationDate').value = patient.registrationDate;
+        } else {
+            // Definir data atual como padrão
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('registrationDate').value = today;
+        }
+    }
+
+    document.getElementById("cep").addEventListener("blur", function (){
+        const cep = document.getElementById('cep').value.replace(/\D/g, '');
+
+        if (cep.length !== 8) {
+            alert('CEP deve conter 8 dígitos!');
+            return;
+        }
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.erro) {
+                    alert('CEP não encontrado!');
+                    return;
+                }
+
+                // Preencher campos do endereço
+                document.getElementById('logradouro').value = data.logradouro || '';
+                document.getElementById('bairro').value = data.bairro || '';
+                document.getElementById('localidade').value = data.localidade || '';
+                document.getElementById('uf').value = data.uf || '';
+                document.getElementById('complemento').value = data.complemento || '';
+
+                // Focar no campo número
+                document.getElementById('numero').focus();
+            })
+            .catch(error => {
+                console.error('Erro ao buscar CEP:', error);
+                alert('Erro ao buscar o CEP. Verifique sua conexão e tente novamente.');
+            })
+            .finally(() => {
+                searchBtn.innerHTML = originalContent;
+                searchBtn.disabled = false;
+            });
+    })
+
+    // Função para abrir o modal
+    function openModal() {
+        document.getElementById('patientModal').classList.add('active');
+    }
+
+    // Função para fechar o modal
+    function closeModal() {
+        document.getElementById('patientModal').classList.remove('active');
+        currentRow = null;
+        resetForm();
+    }
+
+    // Função para resetar o formulário
+    function resetForm() {
+        const form = document.getElementById('patientForm');
+        if (form) {
+            form.reset();
+            document.getElementById('patientId').value = '';
+            document.getElementById('patientStatus').value = 'true';
+
+            // Definir data atual como padrão para data de registro
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('registrationDate').value = today;
+        }
+    }
+
+    // Fechar modal ao clicar fora
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('patientModal');
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Inicializar quando o DOM carregar
+    document.addEventListener('DOMContentLoaded', function() {
+        // Máscaras para os campos
+        setupMasks();
+
+        // Configurar busca em tempo real
+        setupSearch();
+
+        // Configurar busca de CEP
+        setupCEPHandler();
+
+        // Configurar validação do formulário
+        setupFormValidation();
+    });
+
+    // Configurar máscaras
+    function setupMasks() {
+        // Máscara para CPF
+        const cpfInput = document.getElementById('cpf');
+        if (cpfInput) {
+            cpfInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 11) value = value.substring(0, 11);
+
+                if (value.length <= 11) {
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                }
+
+                e.target.value = value;
+            });
+        }
+
+        // Máscara para telefone
+        const phoneInput = document.getElementById('phone');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 11) value = value.substring(0, 11);
+
+                if (value.length === 11) {
+                    value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                    value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                } else if (value.length === 10) {
+                    value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                    value = value.replace(/(\d{4})(\d)/, '$1-$2');
+                }
+
+                e.target.value = value;
+            });
+        }
+
+        // Máscara para celular
+        const cellPhoneInput = document.getElementById('cellPhone');
+        if (cellPhoneInput) {
+            cellPhoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 11) value = value.substring(0, 11);
+
+                if (value.length === 11) {
+                    value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                    value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                } else if (value.length === 10) {
+                    value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                    value = value.replace(/(\d{4})(\d)/, '$1-$2');
+                }
+
+                e.target.value = value;
+            });
+        }
+
+        // Máscara para CEP
+        const cepInput = document.getElementById('cep');
+        if (cepInput) {
+            cepInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 8) value = value.substring(0, 8);
+
+                if (value.length === 8) {
+                    value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                }
+
+                e.target.value = value;
+            });
+        }
+    }
+
+    // Configurar busca de CEP
+    function setupCEPHandler() {
+        const cepInput = document.getElementById('cep');
+        const searchCepBtn = document.getElementById('searchCep');
+
+        if (cepInput && searchCepBtn) {
+            // Adicionar listeners
+            cepInput.addEventListener('blur', handleCEP);
+            searchCepBtn.addEventListener('click', handleCEP);
+        }
+    }
+
+    // Configurar validação do formulário
+    function setupFormValidation() {
+        const form = document.getElementById('patientForm');
+
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                // Validação básica
+                const requiredFields = document.querySelectorAll('[required]');
+                let valid = true;
+
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        valid = false;
+                        field.classList.add('error-field');
+
+                        field.classList.add('shake');
+                        setTimeout(() => field.classList.remove('shake'), 500);
+                    } else {
+                        field.classList.remove('error-field');
+                    }
+                });
+
+
+
+                // Validação específica do email
+                const email = document.getElementById('email')?.value;
+                if (email && !isValidEmail(email)) {
+                    valid = false;
+                    const emailField = document.getElementById('email');
+                    emailField.classList.add('error-field');
+                    emailField.classList.add('shake');
+                    setTimeout(() => emailField.classList.remove('shake'), 500);
+                    alert('Por favor, insira um email válido.');
+                }
+
+                if (!valid) {
+                    e.preventDefault();
+                    alert('Por favor, preencha todos os campos obrigatórios corretamente.');
+                }
+            });
+        }
+    }
+
+    // Configurar busca em tempo real
+    function setupSearch() {
+        const searchInput = document.querySelector('.search-input');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const patientRows = document.querySelectorAll('.patients-table tbody tr');
+
+                patientRows.forEach(row => {
+                    const patientName = row.querySelector('.patient-details h4')?.textContent.toLowerCase() || '';
+                    const patientEmail = row.querySelector('.patient-details p')?.textContent.toLowerCase() || '';
+                    const patientCpf = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+                    const patientPhone = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
+
+                    if (patientName.includes(searchTerm) ||
+                        patientEmail.includes(searchTerm) ||
+                        patientCpf.includes(searchTerm) ||
+                        patientPhone.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+    }
+
+    // Função para validar email
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    // Função para validar CPF
+    function isValidCPF(cpf) {
+        if (cpf.length !== 11) return false;
+
+        // Elimina CPFs com valores iguais
+        if (/^(\d)\1+$/.test(cpf)) return false;
+
+        // Validação do dígito verificador
+        let sum = 0;
+        let remainder;
+
+        for (let i = 1; i <= 9; i++) {
+            sum = sum + parseInt(cpf.substring(i-1, i)) * (11 - i);
+        }
+
+        remainder = (sum * 10) % 11;
+        if ((remainder === 10) || (remainder === 11)) remainder = 0;
+        if (remainder !== parseInt(cpf.substring(9, 10))) return false;
+
+        sum = 0;
+        for (let i = 1; i <= 10; i++) {
+            sum = sum + parseInt(cpf.substring(i-1, i)) * (12 - i);
+        }
+
+        remainder = (sum * 10) % 11;
+        if ((remainder === 10) || (remainder === 11)) remainder = 0;
+        if (remainder !== parseInt(cpf.substring(10, 11))) return false;
+
+        return true;
+    }
+
+    // Adicionar CSS para animações
+    const style = document.createElement('style');
+    style.textContent = `
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .error-field {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2) !important;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Função para visualizar paciente
+    function viewPatient(patientId) {
+        window.location.href = `/clinic/patient/view/${patientId}`;
+    }
+</script>
+</body>
+</html>

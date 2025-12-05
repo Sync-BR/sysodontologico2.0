@@ -9,4 +9,5 @@ import java.util.List;
 public interface SpecialtyRepository extends JpaRepository<SpecialtyEntity, Long> {
     SpecialtyEntity findBySpecialtyTitle(String specialtyTitle);
     List<SpecialtyEntity> findAllByClinic_ClinicId(Long clinicId);
+    Long countAllByClinic_ClinicId(Long clinicId);
 }
